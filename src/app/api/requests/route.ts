@@ -35,6 +35,14 @@ export async function POST(req: Request) {
     return Response.json({ ok: false }, { status: 400 });
   }
 
+  // Bot checks, no database reads: the hidden "website" field is only filled by bots,
+  // and nobody completes the form in under 3 seconds. Bots get a normal-looking
+  // reply so they don't adapt, but nothing is saved or sent.
+  const elapsed = typeof body.elapsed === "number" ? body.elapsed : 0;
+  if ((typeof body.hp === "string" && body.hp !== "") || elapsed < 3000) {
+    return Response.json({ ok: true });
+  }
+
   const d = (body.details ?? {}) as Record<string, unknown>;
   const s = (body.selection ?? {}) as Record<string, unknown>;
 

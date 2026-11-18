@@ -5,8 +5,8 @@
  * ---------------------------------------------------------------
  * The browser never talks to Firebase. Admin screens load and change data
  * through /api/admin, which checks the signed admin cookie set by
- * /api/admin/session (password login). Data reloads after every change,
- * when the tab regains focus, and every 30 seconds while open.
+ * /api/admin/session (password login). Changes show instantly; data reloads
+ * when the tab regains focus (at most once a minute) and every 5 minutes while visible.
  */
 
 import { useSyncExternalStore } from "react";
@@ -43,10 +43,10 @@ function start() {
   if (started || typeof window === "undefined") return;
   started = true;
   void refresh();
-  // Catch up when the admin comes back to the tab (not more than every 10s).
-  let lastFocus = 0;
+  // Catch up when the admin comes back to the tab (not more than once a minute).
+  let lastFocus = Date.now();
   window.addEventListener("focus", () => {
-    if (Date.now() - lastFocus < 10_000) return;
+    if (Date.now() - lastFocus < 60_000) return;
     lastFocus = Date.now();
     void refresh();
   });
@@ -55,7 +55,9 @@ function start() {
 function setSignedIn(signedIn: boolean) {
   const next = signedIn ? "admin" : "signedOut";
   if (authState.status !== next) authState = { status: next };
-  if (signedIn && !timer) timer = setInterval(() => !document.hidden && void refresh(), 30_000);
+  // Free-plan friendly: each reload reads every record, so check every 5 minutes
+  // (only while the tab is visible) plus whenever the admin returns to the tab.
+  if (signedIn && !timer) timer = setInterval(() => !document.hidden && void refresh(), 5 * 60_000);
   if (!signedIn) {
     clearInterval(timer);
     timer = undefined;

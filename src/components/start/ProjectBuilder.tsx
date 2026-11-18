@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { Check, CircleAlert, MessageCircle, Send, Sparkles } from "lucide-react";
 import {
@@ -26,6 +26,8 @@ type Details = { name: string; phone: string; email: string; org: string; deadli
 type Errors = Partial<Record<"item" | "name" | "phone" | "notes", string>>;
 
 const noopSubscribe = () => () => {};
+const msSince = (t: number) => (t ? Date.now() - t : 0);
+const now = () => Date.now();
 const readServiceParam = () => new URLSearchParams(window.location.search).get("service");
 
 function formatDate(iso: string) {
@@ -52,6 +54,12 @@ export function ProjectBuilder() {
   const [errors, setErrors] = useState<Errors>({});
   const [sentUrl, setSentUrl] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  // Spam checks (invisible to people): a hidden field only bots fill in, and how long the form was open.
+  const trap = useRef<HTMLInputElement>(null);
+  const openedAt = useRef(0);
+  useEffect(() => {
+    openedAt.current = now();
+  }, []);
 
   // URL ?service=<slug> preselects; a click always wins.
   const fromUrl = urlService === OTHER || findItem(urlService) ? urlService : null;
@@ -149,6 +157,8 @@ export function ProjectBuilder() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         selection,
+        hp: trap.current?.value ?? "",
+        elapsed: msSince(openedAt.current),
         details: {
           name: d.name.trim(),
           phone: d.phone.trim(),
@@ -237,6 +247,15 @@ export function ProjectBuilder() {
         }}
         className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12"
       >
+        <input
+          ref={trap}
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+          className="pointer-events-none absolute -left-[9999px] h-px w-px opacity-0"
+        />
         <div className="flex min-w-0 flex-col gap-14">
           {errorCount > 0 && (
             <p role="alert" className="flex items-center gap-2 rounded-xl border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">

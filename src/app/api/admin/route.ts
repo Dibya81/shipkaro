@@ -1,4 +1,4 @@
-import type { DocumentData, QueryDocumentSnapshot } from "firebase-admin/firestore";
+import type { DocumentData, DocumentSnapshot, QueryDocumentSnapshot, WriteBatch } from "firebase-admin/firestore";
 import {
   EXPENSE_CATEGORIES,
   PAY_KINDS,
@@ -81,6 +81,30 @@ function projectFields(p: Record<string, unknown>, partial: boolean): Partial<Om
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+/**
+ * Free "undo" for deletes (the free Firebase plan has no backups): every deleted
+ * record is copied into the trash collection in the same atomic batch, so it can
+ * be restored from the Firebase console if it was deleted by mistake.
+ */
+function trashAndDelete(batch: WriteBatch, snap: DocumentSnapshot) {
+  if (!snap.exists) return;
+  const db = adminDb();
+  batch.set(db.collection("trash").doc(), {
+    collection: snap.ref.parent.id,
+    docId: snap.id,
+    data: snap.data(),
+    deletedAt: new Date().toISOString(),
+  });
+  batch.delete(snap.ref);
+}
+
+async function deleteWithTrash(coll: Coll, docId: string) {
+  const db = adminDb();
+  const batch = db.batch();
+  trashAndDelete(batch, await db.collection(coll).doc(docId).get());
+  await batch.commit();
+}
+
 /* ------------------------------------------------------------------ */
 /* Writes                                                              */
 /* ------------------------------------------------------------------ */
@@ -108,7 +132,7 @@ export async function POST(req: Request) {
       }
       case "deleteRequest": {
         if (!docId) return bad("Missing id");
-        await db.collection("requests").doc(docId).delete();
+        await deleteWithTrash("requests", docId);
         break;
       }
       case "convertToProject": {
@@ -146,10 +170,13 @@ export async function POST(req: Request) {
       }
       case "deleteProject": {
         if (!docId) return bad("Missing id");
-        const pays = await db.collection("payments").where("projectId", "==", docId).get();
+        const [project, pays] = await Promise.all([
+          db.collection("projects").doc(docId).get(),
+          db.collection("payments").where("projectId", "==", docId).get(),
+        ]);
         const batch = db.batch();
-        batch.delete(db.collection("projects").doc(docId));
-        pays.docs.forEach((d) => batch.delete(d.ref));
+        trashAndDelete(batch, project);
+        pays.docs.forEach((d) => trashAndDelete(batch, d));
         await batch.commit();
         break;
       }
@@ -168,7 +195,7 @@ export async function POST(req: Request) {
       }
       case "deletePayment": {
         if (!docId) return bad("Missing id");
-        await db.collection("payments").doc(docId).delete();
+        await deleteWithTrash("payments", docId);
         break;
       }
       case "addExpense": {
@@ -185,7 +212,7 @@ export async function POST(req: Request) {
       }
       case "deleteExpense": {
         if (!docId) return bad("Missing id");
-        await db.collection("expenses").doc(docId).delete();
+        await deleteWithTrash("expenses", docId);
         break;
       }
       default:
