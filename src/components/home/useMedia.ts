@@ -14,3 +14,11 @@ export function useMedia(query: string, serverValue = true) {
     () => serverValue,
   );
 }
+
+/**
+ * Like motion's useReducedMotion, but hydration-safe: the first render matches
+ * the server (motion on), then it switches if the visitor prefers reduced motion.
+ */
+export function useReducedMotion() {
+  return useMedia("(prefers-reduced-motion: reduce)", false);
+}

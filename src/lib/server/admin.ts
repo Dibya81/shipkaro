@@ -33,6 +33,8 @@ export function adminDb(): Firestore {
       }),
     });
   db = getFirestore(app);
+  // REST instead of gRPC: much faster cold starts on serverless, same API.
+  db.settings({ preferRest: true });
   return db;
 }
 

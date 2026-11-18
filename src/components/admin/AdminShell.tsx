@@ -6,7 +6,6 @@ import { useState } from "react";
 import { ArrowUpRight, FolderKanban, Inbox, LayoutDashboard, LogOut, ShieldAlert, Wallet } from "lucide-react";
 import { brand } from "@/config/site";
 import { signInAdmin, signOutAdmin, useAuthState, useDB, useHydrated } from "@/lib/store";
-import { btnSm } from "@/components/admin/ui";
 
 const NAV = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
@@ -90,27 +89,53 @@ function AdminFrame({ children }: { children: React.ReactNode }) {
   const newCount = db.requests.filter((r) => r.status === "new").length;
 
   const isActive = (href: string) => (href === "/admin" ? path === "/admin" : path.startsWith(href));
+  const logo = (size: string) => (
+    <span
+      aria-hidden
+      className={"logo-mark text-fg " + size}
+      style={{ maskImage: `url(${brand.logo})`, WebkitMaskImage: `url(${brand.logo})` }}
+    />
+  );
 
   return (
     <div className="flex min-h-[100dvh] flex-col lg:flex-row">
-      {/* Sidebar (desktop) / top bar (mobile) */}
-      <aside className="border-b border-line bg-card lg:sticky lg:top-0 lg:flex lg:h-[100dvh] lg:w-[248px] lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
-        <div className="flex items-center justify-between gap-3 px-5 py-4 lg:py-6">
-          <Link href="/admin" className="flex min-h-11 items-center gap-2.5">
-            <span
-              aria-hidden
-              className="logo-mark h-[22px] w-[31px] text-fg"
-              style={{ maskImage: `url(${brand.logo})`, WebkitMaskImage: `url(${brand.logo})` }}
-            />
-            <span className="text-[17px] font-semibold tracking-[-0.03em]">{brand.name}</span>
-            <span className="rounded-full bg-raised px-2 py-0.5 text-[11px] font-medium text-muted">Admin</span>
+      {/* Phone / tablet: compact top bar */}
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-card/95 px-4 py-2 lg:hidden">
+        <Link href="/admin" className="flex min-h-11 items-center gap-2">
+          {logo("h-[20px] w-[28px]")}
+          <span className="text-[16px] font-semibold tracking-[-0.03em]">{brand.name}</span>
+          <span className="rounded-full bg-raised px-2 py-0.5 text-[12px] font-medium text-muted">Admin</span>
+        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/"
+            aria-label="View website"
+            className="flex size-11 items-center justify-center rounded-full text-muted hover:bg-raised hover:text-fg"
+          >
+            <ArrowUpRight className="size-5" aria-hidden />
           </Link>
-          <Link href="/" className="text-[13px] text-muted hover:text-fg lg:hidden">
-            View site
+          <button
+            type="button"
+            onClick={() => void signOutAdmin()}
+            aria-label="Sign out"
+            className="flex size-11 items-center justify-center rounded-full text-muted hover:bg-raised hover:text-fg"
+          >
+            <LogOut className="size-5" aria-hidden />
+          </button>
+        </div>
+      </header>
+
+      {/* Desktop: sidebar */}
+      <aside className="hidden border-r border-line bg-card lg:sticky lg:top-0 lg:flex lg:h-[100dvh] lg:w-[248px] lg:shrink-0 lg:flex-col">
+        <div className="px-5 py-6">
+          <Link href="/admin" className="flex min-h-11 items-center gap-2.5">
+            {logo("h-[22px] w-[31px]")}
+            <span className="text-[17px] font-semibold tracking-[-0.03em]">{brand.name}</span>
+            <span className="rounded-full bg-raised px-2 py-0.5 text-[12px] font-medium text-muted">Admin</span>
           </Link>
         </div>
-        <nav aria-label="Admin" className="overflow-x-auto px-3 pb-3 lg:flex-1 lg:overflow-visible lg:pb-0">
-          <ul className="flex gap-1 lg:flex-col">
+        <nav aria-label="Admin" className="flex-1 px-3">
+          <ul className="flex flex-col gap-1">
             {NAV.map(({ href, label, icon: Icon }) => (
               <li key={href}>
                 <Link
@@ -138,23 +163,61 @@ function AdminFrame({ children }: { children: React.ReactNode }) {
             ))}
           </ul>
         </nav>
-        <div className="hidden border-t border-line p-4 lg:block">
+        <div className="flex flex-col gap-1 border-t border-line p-4">
           <Link href="/" className="flex min-h-10 items-center gap-1.5 text-[14px] text-muted hover:text-fg">
             View website <ArrowUpRight className="size-4" aria-hidden />
           </Link>
-        </div>
-      </aside>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-end gap-3 border-b border-line px-5 py-3 text-[13px] text-muted lg:px-10">
-          <button type="button" onClick={() => void signOutAdmin()} className={btnSm + " min-h-9 border border-line-strong hover:border-faint"}>
+          <button
+            type="button"
+            onClick={() => void signOutAdmin()}
+            className="flex min-h-10 items-center gap-1.5 text-left text-[14px] text-muted hover:text-fg"
+          >
             <LogOut className="size-4" aria-hidden /> Sign out
           </button>
         </div>
-        <main id="main" className="px-5 pb-20 pt-8 lg:px-10 lg:pt-10">
-          {children}
-        </main>
-      </div>
+      </aside>
+
+      <main id="main" className="min-w-0 flex-1 px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-6 sm:px-6 lg:px-10 lg:pb-20 lg:pt-10">
+        {children}
+      </main>
+
+      {/* Phone / tablet: bottom tab bar */}
+      <nav
+        aria-label="Admin"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] lg:hidden"
+      >
+        <ul className="mx-auto grid max-w-[560px] grid-cols-4">
+          {NAV.map(({ href, label, icon: Icon }) => {
+            const active = isActive(href);
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={
+                    "relative flex min-h-[60px] flex-col items-center justify-center gap-1 text-[12px] font-medium transition-colors " +
+                    (active ? "text-fg" : "text-muted hover:text-fg")
+                  }
+                >
+                  <span
+                    className={
+                      "flex h-7 w-12 items-center justify-center rounded-full transition-colors " + (active ? "bg-fg text-bg" : "")
+                    }
+                  >
+                    <Icon className="size-[18px]" strokeWidth={1.75} aria-hidden />
+                  </span>
+                  {label}
+                  {href === "/admin/requests" && newCount > 0 && (
+                    <span className="absolute left-1/2 top-1.5 ml-3 min-w-5 rounded-full bg-accent px-1.5 text-center text-[11px] font-semibold leading-5 text-ink">
+                      {newCount}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </div>
   );
 }

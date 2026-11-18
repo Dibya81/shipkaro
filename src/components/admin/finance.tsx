@@ -145,7 +145,7 @@ export function FinanceView() {
         <Kpi label="Still to collect" value={money(outstanding)} note="Across all projects" />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.6fr_1fr]">
         <CashflowChart db={db} months={chartMonths(period, db)} />
         <ExpenseBreakdown expenses={expenses} />
       </div>
@@ -332,47 +332,74 @@ function Receivables({ db }: { db: DB }) {
       {rows.length === 0 ? (
         <p className="text-[15px] text-muted">Every project is fully paid.</p>
       ) : (
-        <div className="-mx-2 overflow-x-auto">
-          <table className="w-full min-w-[640px] text-[14px]">
-            <thead>
-              <tr className="text-left text-[13px] text-muted">
-                <th className="px-2 py-2 font-medium">Project</th>
-                <th className="px-2 py-2 text-right font-medium">Agreed</th>
-                <th className="px-2 py-2 text-right font-medium">Received</th>
-                <th className="px-2 py-2 text-right font-medium">To collect</th>
-                <th className="px-2 py-2 font-medium">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(({ p, paid, due }) => {
-                const d = daysUntil(p.dueDate);
-                const status =
-                  paid === 0
-                    ? { t: "Awaiting advance", tone: "new" }
-                    : p.stage === "delivered" || d < 0
-                      ? { t: d < 0 ? `Balance overdue ${-d}d` : "Balance due", tone: "overdue" }
-                      : { t: "Advance received", tone: "neutral" };
-                return (
-                  <tr key={p.id} className="border-t border-line">
-                    <td className="px-2 py-3">
+        <>
+          {/* Phone: one card per project */}
+          <ul className="divide-y divide-line sm:hidden">
+            {rows.map(({ p, paid, due }) => {
+              const status = collectStatus(p, paid);
+              return (
+                <li key={p.id} className="py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
                       <p className="font-medium">{p.title}</p>
-                      <p className="text-[13px] text-muted">{p.client}</p>
-                    </td>
-                    <td className="px-2 py-3 text-right">{money(p.agreedPrice)}</td>
-                    <td className="px-2 py-3 text-right">{money(paid)}</td>
-                    <td className="px-2 py-3 text-right font-semibold">{money(due)}</td>
-                    <td className="px-2 py-3">
-                      <Badge tone={status.tone}>{status.t}</Badge>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      <p className="truncate text-[13px] text-muted">{p.client}</p>
+                    </div>
+                    <p className="shrink-0 text-[15px] font-semibold">{money(due)}</p>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] text-muted">
+                    <Badge tone={status.tone}>{status.t}</Badge>
+                    <span>
+                      {money(paid)} of {money(p.agreedPrice)} received
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          {/* Tablet and up: table */}
+          <div className="-mx-2 hidden overflow-x-auto sm:block">
+            <table className="w-full min-w-[600px] text-[14px]">
+              <thead>
+                <tr className="text-left text-[13px] text-muted">
+                  <th className="px-2 py-2 font-medium">Project</th>
+                  <th className="px-2 py-2 text-right font-medium">Agreed</th>
+                  <th className="px-2 py-2 text-right font-medium">Received</th>
+                  <th className="px-2 py-2 text-right font-medium">To collect</th>
+                  <th className="px-2 py-2 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map(({ p, paid, due }) => {
+                  const status = collectStatus(p, paid);
+                  return (
+                    <tr key={p.id} className="border-t border-line">
+                      <td className="px-2 py-3">
+                        <p className="font-medium">{p.title}</p>
+                        <p className="text-[13px] text-muted">{p.client}</p>
+                      </td>
+                      <td className="px-2 py-3 text-right">{money(p.agreedPrice)}</td>
+                      <td className="px-2 py-3 text-right">{money(paid)}</td>
+                      <td className="px-2 py-3 text-right font-semibold">{money(due)}</td>
+                      <td className="px-2 py-3">
+                        <Badge tone={status.tone}>{status.t}</Badge>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </Panel>
   );
+}
+
+function collectStatus(p: { dueDate: string; stage: string }, paid: number) {
+  const d = daysUntil(p.dueDate);
+  if (paid === 0) return { t: "Awaiting advance", tone: "new" };
+  if (p.stage === "delivered" || d < 0) return { t: d < 0 ? `Balance overdue ${-d}d` : "Balance due", tone: "overdue" };
+  return { t: "Advance received", tone: "neutral" };
 }
 
 /* ------------------------------------------------------------------ */
@@ -503,7 +530,7 @@ function ExpenseForm({ onDone }: { onDone: () => void }) {
         addExpense({ amount: n, date, category, note: note.trim() });
         onDone();
       }}
-      className="mb-4 grid grid-cols-2 gap-3 rounded-xl border border-line bg-bg p-3 lg:grid-cols-5 lg:items-end"
+      className="mb-4 grid grid-cols-1 gap-3 rounded-xl min-[400px]:grid-cols-2 border border-line bg-bg p-3 lg:grid-cols-5 lg:items-end"
     >
       <label className="flex flex-col gap-1 text-[13px] text-muted">
         Amount (₹)
@@ -525,7 +552,7 @@ function ExpenseForm({ onDone }: { onDone: () => void }) {
         What for
         <input value={note} onChange={(e) => setNote(e.target.value)} className={inputCls} placeholder="Figma, domain, ads..." />
       </label>
-      <button type="submit" className={btnSm + " col-span-2 bg-fg text-bg lg:col-span-1"}>
+      <button type="submit" className={btnSm + " col-span-full bg-fg text-bg lg:col-span-1"}>
         Save expense
       </button>
     </form>

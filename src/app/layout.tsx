@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { MotionProvider } from "@/components/MotionProvider";
-import { SmoothScroll } from "@/components/SmoothScroll";
 import { brand, contact, seo } from "@/config/site";
 import { instagramLink } from "@/lib/whatsapp";
 import { DEFAULT_THEME, themeInitScript } from "@/lib/theme";
@@ -84,7 +83,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
-          <SmoothScroll />
           {children}
         </MotionProvider>
         <script

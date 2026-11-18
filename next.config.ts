@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   reactCompiler: true,
   poweredByHeader: false,
+  // AVIF first (roughly 20-30% smaller than WebP at the same quality), WebP fallback.
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   // Tailwind CSS is small: inline it in <head> so first paint doesn't wait on a stylesheet request.
   experimental: {
     inlineCss: true,

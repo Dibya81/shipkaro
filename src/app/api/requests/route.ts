@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { categoryOf, findItem, formatINR, speeds, type SpeedId } from "@/config/pricing";
 import { startPage } from "@/config/site";
@@ -90,7 +91,8 @@ export async function POST(req: Request) {
   const price = estimate.custom
     ? `Custom quote${record.budget ? ` (budget ${record.budget})` : ""}`
     : `${formatINR(estimate.total)}${estimate.monthly ? ` + ${formatINR(estimate.monthly)}/month` : ""}`;
-  await notifyTelegram(
+  // Reply to the visitor straight away; the Telegram ping runs after the response.
+  const alert =
     [
       "New ShipKaro request",
       "",
@@ -105,8 +107,8 @@ export async function POST(req: Request) {
       notes ? `\n${notes}` : "",
     ]
       .filter((l) => l !== "")
-      .join("\n"),
-  );
+      .join("\n");
+  after(() => notifyTelegram(alert));
 
   return Response.json({ ok: true });
 }

@@ -43,13 +43,19 @@ function start() {
   if (started || typeof window === "undefined") return;
   started = true;
   void refresh();
-  window.addEventListener("focus", () => void refresh());
+  // Catch up when the admin comes back to the tab (not more than every 10s).
+  let lastFocus = 0;
+  window.addEventListener("focus", () => {
+    if (Date.now() - lastFocus < 10_000) return;
+    lastFocus = Date.now();
+    void refresh();
+  });
 }
 
 function setSignedIn(signedIn: boolean) {
   const next = signedIn ? "admin" : "signedOut";
   if (authState.status !== next) authState = { status: next };
-  if (signedIn && !timer) timer = setInterval(() => void refresh(), 30_000);
+  if (signedIn && !timer) timer = setInterval(() => !document.hidden && void refresh(), 30_000);
   if (!signedIn) {
     clearInterval(timer);
     timer = undefined;
@@ -57,8 +63,16 @@ function setSignedIn(signedIn: boolean) {
   }
 }
 
+let inflight: Promise<void> | null = null;
+
 /** Reloads all admin data. Marks the session signed out if the cookie is missing or expired. */
-export async function refresh() {
+export function refresh() {
+  // Calls made while a reload is running share it instead of stacking requests.
+  inflight ??= load().finally(() => (inflight = null));
+  return inflight;
+}
+
+async function load() {
   try {
     const res = await fetch("/api/admin", { cache: "no-store" });
     if (res.status === 401) {
@@ -120,18 +134,33 @@ export async function signOutAdmin() {
 /* ------------------------------------------------------------------ */
 /* Writes                                                              */
 /* ------------------------------------------------------------------ */
+/*
+ * Every change is applied on screen first (optimistic), then sent to the
+ * server. On failure the admin is told and the data reloads from the server.
+ * Adds reload quietly afterwards to pick up the real document ids.
+ */
 
-/** Sends one change to the server, then reloads. Tells the admin if it failed. */
-async function adminWrite(payload: Record<string, unknown>) {
+function apply(next: Partial<DB>) {
+  state = { ...state, ...next };
+  emit();
+}
+
+const tempId = () => `tmp-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+async function adminWrite(payload: Record<string, unknown>, { reload = false } = {}) {
   try {
     const res = await fetch("/api/admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    if (res.ok) {
+      if (reload) void refresh();
+      return;
+    }
     if (res.status === 401) {
       alert("Your admin session has ended. Please sign in again.");
-    } else if (!res.ok) {
+    } else {
       const { error } = (await res.json().catch(() => ({}))) as { error?: string };
       alert(error ? `Could not save: ${error}` : "Could not save that change. Please try again.");
     }
@@ -139,54 +168,78 @@ async function adminWrite(payload: Record<string, unknown>) {
     console.error(err);
     alert("Could not save that change. Check your connection.");
   }
-  await refresh();
+  await refresh(); // undo the optimistic change
 }
 
 export const today = () => new Date().toISOString().slice(0, 10);
 
 export function setRequestStatus(id: string, status: RequestStatus) {
-  // Show the new status straight away; the reload confirms it.
-  state = { ...state, requests: state.requests.map((r) => (r.id === id ? { ...r, status } : r)) };
-  emit();
+  apply({ requests: state.requests.map((r) => (r.id === id ? { ...r, status } : r)) });
   return adminWrite({ op: "setRequestStatus", id, status });
 }
 
 export function deleteRequest(id: string) {
+  apply({ requests: state.requests.filter((r) => r.id !== id) });
   return adminWrite({ op: "deleteRequest", id });
 }
 
 /** Marks the request as won and opens a project for it */
 export function convertToProject(id: string, agreedPrice: number, dueDate: string) {
-  return adminWrite({ op: "convertToProject", id, agreedPrice, dueDate });
+  const r = state.requests.find((x) => x.id === id);
+  if (r) {
+    apply({
+      requests: state.requests.map((x) => (x.id === id ? { ...x, status: "won" as const } : x)),
+      projects: [
+        ...state.projects,
+        {
+          id: tempId(),
+          requestId: id,
+          client: r.org ? `${r.name}, ${r.org}` : r.name,
+          phone: r.phone,
+          title: r.itemTitle,
+          agreedPrice,
+          startDate: today(),
+          dueDate,
+          stage: "kickoff" as const,
+        },
+      ].sort((a, b) => a.dueDate.localeCompare(b.dueDate)),
+    });
+  }
+  return adminWrite({ op: "convertToProject", id, agreedPrice, dueDate }, { reload: true });
 }
 
 export function addProject(p: Omit<Project, "id">) {
-  return adminWrite({ op: "addProject", data: p });
+  apply({ projects: [...state.projects, { ...p, id: tempId() }].sort((a, b) => a.dueDate.localeCompare(b.dueDate)) });
+  return adminWrite({ op: "addProject", data: p }, { reload: true });
 }
 
 export function updateProject(id: string, patch: Partial<Omit<Project, "id">>) {
-  state = { ...state, projects: state.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) };
-  emit();
+  apply({ projects: state.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) });
   return adminWrite({ op: "updateProject", id, data: patch });
 }
 
 export function deleteProject(id: string) {
+  apply({ projects: state.projects.filter((p) => p.id !== id), payments: state.payments.filter((p) => p.projectId !== id) });
   return adminWrite({ op: "deleteProject", id });
 }
 
 export function addPayment(p: Omit<Payment, "id">) {
-  return adminWrite({ op: "addPayment", data: p });
+  apply({ payments: [{ ...p, id: tempId() }, ...state.payments].sort((a, b) => b.date.localeCompare(a.date)) });
+  return adminWrite({ op: "addPayment", data: p }, { reload: true });
 }
 
 export function deletePayment(id: string) {
+  apply({ payments: state.payments.filter((p) => p.id !== id) });
   return adminWrite({ op: "deletePayment", id });
 }
 
 export function addExpense(e: Omit<Expense, "id">) {
-  return adminWrite({ op: "addExpense", data: e });
+  apply({ expenses: [{ ...e, id: tempId() }, ...state.expenses].sort((a, b) => b.date.localeCompare(a.date)) });
+  return adminWrite({ op: "addExpense", data: e }, { reload: true });
 }
 
 export function deleteExpense(id: string) {
+  apply({ expenses: state.expenses.filter((e) => e.id !== id) });
   return adminWrite({ op: "deleteExpense", id });
 }
 

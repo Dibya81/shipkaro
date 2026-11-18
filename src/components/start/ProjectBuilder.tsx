@@ -593,7 +593,7 @@ export function ProjectBuilder() {
         </aside>
 
         {/* Mobile: sticky total + send */}
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 px-4 py-3 lg:hidden">
           <div className="mx-auto flex max-w-[640px] items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[12px] text-faint">{startPage.estimateLabel}</p>

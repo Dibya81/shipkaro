@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { useAnimationFrame, useInView, useReducedMotion, useScroll } from "motion/react";
-import { useMedia } from "@/components/home/useMedia";
+import { useAnimationFrame, useInView, useScroll } from "motion/react";
+import { useMedia, useReducedMotion } from "@/components/home/useMedia";
+import { isConstrainedDevice } from "@/lib/device";
 
 /**
  * The client requests that drift along curved lines around the hero.
@@ -18,6 +19,8 @@ export function HeroDrift({ lines }: { lines: string[] }) {
   const inView = useInView(root);
   const { scrollY } = useScroll();
   const units = useRef<{ loop: number; ribbon: number }>({ loop: 0, ribbon: 0 });
+  // Phones and weak devices redraw the text at ~30fps instead of every frame (same speed, half the work).
+  const frame = useRef<{ last: number; step: number | null }>({ last: 0, step: null });
   const desktop = useMedia("(min-width: 768px)");
 
   const loopCopy = `${lines[0]}${lines[2]}`;
@@ -25,6 +28,10 @@ export function HeroDrift({ lines }: { lines: string[] }) {
 
   useAnimationFrame((t) => {
     if (reduce || !inView) return;
+    const f = frame.current;
+    f.step ??= isConstrainedDevice() || window.matchMedia("(hover: none)").matches ? 33 : 0;
+    if (t - f.last < f.step) return;
+    f.last = t;
     const u = units.current;
     // Measure one repetition once fonts have settled (text holds two copies).
     if (!u.loop && loopText.current) u.loop = loopText.current.getComputedTextLength() / 2;

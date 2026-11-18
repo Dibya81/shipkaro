@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { m, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { m, useMotionValue, useScroll, useTransform, type MotionValue } from "motion/react";
 import { statement } from "@/config/site";
-import { useMedia } from "@/components/home/useMedia";
+import { useMedia, useReducedMotion } from "@/components/home/useMedia";
 
 /**
  * Pinned comparison, told in two acts as you scroll:

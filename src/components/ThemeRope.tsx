@@ -200,9 +200,22 @@ export function ThemeRope() {
       const { x, y } = handleCentre();
       prepareInk(x, y);
     };
-    timers.push(window.setTimeout(warm, 300));
+    // Warm up once the page has finished loading and gone idle, so it never
+    // competes with first paint or hydration on slow phones.
+    let idleId = 0;
+    const warmWhenIdle = () => {
+      if (typeof window.requestIdleCallback === "function") idleId = window.requestIdleCallback(warm, { timeout: 4000 });
+      else timers.push(setTimeout(warm, 1500) as unknown as number);
+    };
+    if (document.readyState === "complete") timers.push(window.setTimeout(warmWhenIdle, 800));
+    else window.addEventListener("load", warmWhenIdle, { once: true });
+    // Phones fire resize constantly while scrolling (the address bar shows and
+    // hides), so only rebuild when the width really changes (rotation, window resize).
     let resizeTimer = 0;
+    let lastWidth = window.innerWidth;
     const onResize = () => {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(warm, 250);
     };
@@ -247,6 +260,8 @@ export function ThemeRope() {
 
     return () => {
       timers.forEach((t) => window.clearTimeout(t));
+      if (idleId) window.cancelIdleCallback(idleId);
+      window.removeEventListener("load", warmWhenIdle);
       window.clearTimeout(resizeTimer);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);

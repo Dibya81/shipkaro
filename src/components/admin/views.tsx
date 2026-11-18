@@ -81,11 +81,11 @@ export function Overview() {
         <Kpi label="Still to collect" value={money(outstanding)} note={`${active.length} active projects`} />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
         <Panel
           title="Requests to answer"
           action={
-            <Link href="/admin/requests" className="flex items-center gap-1 text-[14px] text-muted hover:text-fg">
+            <Link href="/admin/requests" className="-my-2 flex min-h-11 items-center gap-1 text-[14px] text-muted hover:text-fg">
               All requests <ArrowRight className="size-4" aria-hidden />
             </Link>
           }
@@ -118,7 +118,7 @@ export function Overview() {
         <Panel
           title="Active projects"
           action={
-            <Link href="/admin/projects" className="flex items-center gap-1 text-[14px] text-muted hover:text-fg">
+            <Link href="/admin/projects" className="-my-2 flex min-h-11 items-center gap-1 text-[14px] text-muted hover:text-fg">
               All projects <ArrowRight className="size-4" aria-hidden />
             </Link>
           }
@@ -488,10 +488,10 @@ export function PaymentForm({
         addPayment({ projectId: pid, amount: n, date, method, kind, note: note.trim() });
         onDone();
       }}
-      className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-line bg-bg p-3 sm:grid-cols-3 lg:grid-cols-6 lg:items-end"
+      className="mt-4 grid grid-cols-1 gap-3 rounded-xl min-[400px]:grid-cols-2 border border-line bg-bg p-3 sm:grid-cols-3 lg:grid-cols-6 lg:items-end"
     >
       {projects && (
-        <label className="col-span-2 flex flex-col gap-1 text-[13px] text-muted sm:col-span-3 lg:col-span-2">
+        <label className="col-span-full flex flex-col gap-1 text-[13px] text-muted sm:col-span-3 lg:col-span-2">
           Project
           <select value={pid} onChange={(e) => setPid(e.target.value)} className={inputCls} required>
             {projects.map((p) => (
@@ -534,7 +534,7 @@ export function PaymentForm({
           <input value={note} onChange={(e) => setNote(e.target.value)} className={inputCls} placeholder="UPI ref, optional" />
         </label>
       )}
-      <button type="submit" className={btnSm + " col-span-2 bg-fg text-bg sm:col-span-1"}>
+      <button type="submit" className={btnSm + " col-span-full bg-fg text-bg sm:col-span-1"}>
         Save payment
       </button>
     </form>

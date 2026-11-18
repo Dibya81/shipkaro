@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { isConstrainedDevice } from "@/lib/device";
 
 /** The live Lenis instance, so components can scroll programmatically without fighting it. */
 let lenis: Lenis | null = null;
@@ -15,11 +16,18 @@ export function scrollToY(y: number) {
 /**
  * Inertial smooth scrolling (Lenis). It drives the native scroll position, so
  * Motion's useScroll and sticky positioning keep working untouched.
- * Skipped entirely for visitors who prefer reduced motion.
+ * Desktop only: phones and tablets keep native touch scrolling (smoother and
+ * cheaper there), and it is skipped on weak devices and for reduced motion.
  */
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches ||
+      isConstrainedDevice()
+    ) {
+      return;
+    }
     lenis = new Lenis({ autoRaf: true, lerp: 0.11, anchors: { offset: -96 } });
     return () => {
       lenis?.destroy();

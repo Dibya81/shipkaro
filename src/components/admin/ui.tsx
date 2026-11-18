@@ -40,7 +40,7 @@ export function PageHeader({ title, sub, children }: { title: string; sub?: stri
   return (
     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="font-display text-[clamp(36px,4vw,52px)] leading-none tracking-[-0.02em]">{title}</h1>
+        <h1 className="font-display text-[clamp(34px,4vw,52px)] leading-none tracking-[-0.02em]">{title}</h1>
         {sub && <p className="mt-2 text-[15px] text-muted">{sub}</p>}
       </div>
       {children && <div className="flex flex-wrap items-center gap-2">{children}</div>}
@@ -60,7 +60,7 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className={"rounded-[22px] border border-line bg-card p-5 sm:p-6 " + className}>
+    <section className={"min-w-0 rounded-[22px] border border-line bg-card p-4 sm:p-6 " + className}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-3">
           {title && <h2 className="text-[15px] font-semibold">{title}</h2>}
@@ -74,9 +74,9 @@ export function Panel({
 
 export function Kpi({ label, value, note, tone }: { label: string; value: string; note?: string; tone?: "good" | "bad" }) {
   return (
-    <div className="rounded-[22px] border border-line bg-card p-5">
+    <div className="min-w-0 rounded-[22px] border border-line bg-card p-4 sm:p-5">
       <p className="text-[13px] text-muted">{label}</p>
-      <p className="mt-2 font-display text-[32px] leading-none tracking-[-0.01em]">{value}</p>
+      <p className="mt-2 break-words font-display text-[clamp(24px,7vw,32px)] leading-none tracking-[-0.01em]">{value}</p>
       {note && (
         <p
           className={
@@ -110,7 +110,7 @@ export function Badge({ tone = "neutral", children }: { tone?: keyof typeof BADG
 }
 
 export const inputCls =
-  "min-h-10 w-full rounded-[10px] border border-line-strong bg-bg px-3 py-2 text-[14px] text-fg placeholder:text-placeholder focus:border-accent-strong focus:outline-none";
+  "min-h-11 w-full min-w-0 rounded-[10px] border border-line-strong bg-bg px-3 py-2 text-[16px] sm:text-[14px] text-fg placeholder:text-placeholder focus:border-accent-strong focus:outline-none";
 
 export const btnSm =
   "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-[10px] px-3.5 text-[14px] font-medium transition-colors";

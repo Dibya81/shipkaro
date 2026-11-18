@@ -21,7 +21,7 @@ export function Header() {
 
   return (
     <header className="site-nav sticky top-0 z-40 px-3 pt-3 sm:px-4 sm:pt-4">
-      <div className="mx-auto max-w-[1080px] rounded-2xl border border-line bg-bg/95 shadow-[0_8px_30px_-12px_rgb(60_60_20/0.18)] backdrop-blur-xl">
+      <div className="mx-auto max-w-[1080px] rounded-2xl border border-line bg-bg/95 shadow-[0_8px_30px_-12px_rgb(60_60_20/0.18)] [@media(hover:hover)]:backdrop-blur-xl">
         <nav aria-label="Main" className="flex h-16 items-center justify-between gap-4 pl-4 pr-2 sm:pl-5">
           <Logo onClick={close} />
 

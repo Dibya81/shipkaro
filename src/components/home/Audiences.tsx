@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { m, useScroll, useTransform, type MotionValue } from "motion/react";
 import { audienceSection, audiences, services, type Audience } from "@/config/site";
-import { useMedia } from "@/components/home/useMedia";
+import { useMedia, useReducedMotion } from "@/components/home/useMedia";
 
 const serviceBySlug = new Map(services.map((s) => [s.slug, s]));
 
