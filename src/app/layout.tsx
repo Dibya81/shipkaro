@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { MotionProvider } from "@/components/MotionProvider";
-import { ThemeRope } from "@/components/ThemeRope";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { brand, contact, seo } from "@/config/site";
 import { instagramLink } from "@/lib/whatsapp";
@@ -88,12 +85,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <MotionProvider>
           <SmoothScroll />
-          <Header />
-          <ThemeRope />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          {children}
         </MotionProvider>
         <script
           type="application/ld+json"

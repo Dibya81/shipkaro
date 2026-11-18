@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { hero, notFoundPage } from "@/config/site";
+import { SiteChrome } from "@/components/SiteChrome";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
+    <SiteChrome>
     <section className="container-page flex min-h-[70dvh] flex-col justify-center gap-7 py-20">
       <span className="font-display text-[clamp(96px,18vw,200px)] leading-none tracking-[-0.05em] text-accent-strong">
         404
@@ -28,5 +30,6 @@ export default function NotFound() {
         </Link>
       </div>
     </section>
+    </SiteChrome>
   );
 }

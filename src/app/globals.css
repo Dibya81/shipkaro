@@ -48,6 +48,9 @@
   --tone-wash-fg: #ffe9dc;
   --tone-ink: #f4f4e2;
   --tone-ink-fg: #161614;
+  /* chart series (validated for CVD + contrast on the dark card) */
+  --viz-in: #ee5e1c;
+  --viz-out: #3b82c4;
 }
 
 /* Light is the default theme. The canvas is a warm off-white, not pure white. */
@@ -90,6 +93,9 @@
   --tone-wash-fg: #161614;
   --tone-ink: #2a2a24;
   --tone-ink-fg: #ffffeb;
+  /* chart series (validated for CVD + contrast on the cream canvas) */
+  --viz-in: #e2531a;
+  --viz-out: #2f6fa8;
 }
 
 @theme inline {
@@ -119,6 +125,8 @@
   --color-sheet-fg: var(--sheet-fg);
   --color-sheet-muted: var(--sheet-muted);
   --color-sheet-line: var(--sheet-line);
+  --color-viz-in: var(--viz-in);
+  --color-viz-out: var(--viz-out);
 }
 
 /* Brand constants, identical in both themes */
