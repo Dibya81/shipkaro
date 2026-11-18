@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 2 68 48" fill="none">
+  <!-- ShipKaro mark (parcel + speed lines + arrow), reversed variant for dark backgrounds.
+       Vector redraw of the brand board. Replace with the original SVG if you have it. -->
+  <defs>
+    <mask id="sk-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="72" height="56">
+      <rect width="72" height="56" fill="#000"/>
+      <polygon points="26,14 46,4 66,14 66,38 46,48 26,38" fill="#fff"/>
+      <g stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 12 L46 24 L70 12" stroke-width="3.2"/>
+        <path d="M33 10.5 L53 20.5 M38 8 L58 18" stroke-width="1.8"/>
+        <path d="M18 44 Q36 44 54 30" stroke-width="9"/>
+        <polygon points="58.5,26.5 55.6,36 48.8,26.9" fill="#000" stroke-width="3.5"/>
+      </g>
+    </mask>
+  </defs>
+  <g fill="#F5F5F2">
+    <rect width="72" height="56" mask="url(#sk-cut)"/>
+    <path d="M20 44 Q36 44 52.4 31.2" stroke="#F5F5F2" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="58.5,26.5 55.6,36 48.8,26.9"/>
+    <rect x="11" y="17.5" width="12" height="4.2" rx="2.1"/>
+    <rect x="2" y="24.9" width="21" height="4.2" rx="2.1"/>
+    <rect x="8" y="32.3" width="13" height="4.2" rx="2.1"/>
+  </g>
+</svg>

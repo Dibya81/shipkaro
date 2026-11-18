@@ -1,0 +1,400 @@
+@import "tailwindcss";
+
+/*
+ * ShipKaro design tokens.
+ * The theme lives on <html data-theme="dark|light"> (set before first paint by the
+ * inline script in layout.tsx). Every themed colour is a CSS variable switched by
+ * [data-theme]; components only use the Tailwind token names below.
+ *
+ * z-index scale: header 40, theme rope 45, skip-link 50. Nothing else uses z-index.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0a0b;
+  --card: #121214;
+  --card-hover: #16161a;
+  --raised: #18181b;
+  --raised-2: #1e1e22;
+  --line-soft: #1f1f23;
+  --line: #232328;
+  --line-strong: #2e2e34;
+  --ring-idle: #3a3a40;
+  --fg: #f5f5f2;
+  --soft: #c9c9ce;
+  --label: #d4d4d8;
+  --muted: #a1a1aa;
+  --faint: #8e8e96;
+  --placeholder: #8a8a92;
+  --accent-strong: #ff6a2b; /* orange for large text and icons */
+  --accent-text: #ff8a57; /* orange for small text */
+  --accent-line: #4a2a18;
+  --accent-wash: #1c1612;
+  --success-bg: #1f3d2b;
+  --success: #6ee7a0;
+  --danger: #ff8a80;
+  --cord-top: #3a3a40;
+  --cord-bottom: #8e8e96;
+}
+
+/* Light is the default theme */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f5f2;
+  --card: #fdfdfb;
+  --card-hover: #f9f9f6;
+  --raised: #f0f0ec;
+  --raised-2: #eaeae5;
+  --line-soft: #e6e6e1;
+  --line: #e1e1db;
+  --line-strong: #cfcfc8;
+  --ring-idle: #c9c9c2;
+  --fg: #0a0a0b;
+  --soft: #3b3b42;
+  --label: #2a2a30;
+  --muted: #55555d;
+  --faint: #6a6a72;
+  --placeholder: #6e6e76;
+  --accent-strong: #e2531a; /* 3.5:1 on paper: large text and icons only */
+  --accent-text: #c2410c; /* 4.7:1 on paper: safe for small text */
+  --accent-line: #f5c7ae;
+  --accent-wash: #fff1ea;
+  --success-bg: #ddf2e4;
+  --success: #157f3b;
+  --danger: #b42318;
+  --cord-top: #c9c9c2;
+  --cord-bottom: #55555d;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-raised: var(--raised);
+  --color-raised-2: var(--raised-2);
+  --color-line-soft: var(--line-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ring-idle: var(--ring-idle);
+  --color-fg: var(--fg);
+  --color-soft: var(--soft);
+  --color-label: var(--label);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-placeholder: var(--placeholder);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-text: var(--accent-text);
+  --color-accent-line: var(--accent-line);
+  --color-accent-wash: var(--accent-wash);
+  --color-success-bg: var(--success-bg);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+}
+
+/* Brand constants, identical in both themes */
+@theme {
+  --color-accent: #ff6a2b; /* Ship Orange fills: buttons, CTA band, tags */
+  --color-accent-hover: #ff7d45;
+  --color-ink: #0a0a0b; /* text on orange */
+  --color-on-ink: #f5f5f2; /* text on ink buttons */
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 20px;
+  --radius-panel: 24px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --focus-ring: var(--accent-strong);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* On orange surfaces the ring switches to ink so it stays visible */
+.on-accent {
+  --focus-ring: var(--color-ink);
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 20px;
+  @media (width >= 640px) {
+    padding-inline: 32px;
+  }
+}
+
+@utility section-y {
+  padding-block: 100px;
+  @media (width >= 1024px) {
+    padding-block: 128px;
+  }
+}
+
+/* Buttons: 12px radius everywhere (pills are reserved for tags/choices), >= 44px tap target */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding-inline: 1.625rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s var(--ease-out-expo),
+    border-color 0.2s var(--ease-out-expo),
+    color 0.2s var(--ease-out-expo),
+    transform 0.2s var(--ease-out-expo);
+  &:active {
+    transform: translateY(1px) scale(0.98);
+  }
+}
+
+@utility btn-primary {
+  background: var(--color-accent);
+  color: var(--color-ink);
+  &:hover {
+    background: var(--color-accent-hover);
+  }
+}
+
+@utility btn-ghost {
+  border: 1px solid var(--color-line-strong);
+  color: var(--color-fg);
+  &:hover {
+    border-color: var(--color-muted);
+    background: var(--color-card);
+  }
+}
+
+@utility btn-ink {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  &:hover {
+    background: #1d1d21;
+  }
+}
+
+/* Logo: public/logo.svg used as a mask, painted in the current text colour,
+   so one file works on both themes. */
+.logo-mark {
+  background-color: currentColor;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* ---------------------------------------------------------------- */
+/* Theme rope (components/ThemeRope.tsx)                             */
+/* ---------------------------------------------------------------- */
+
+.rope {
+  --len: 92px;
+  position: fixed;
+  top: 0;
+  right: clamp(0.75rem, 2.2vw, 1.5rem);
+  z-index: 45;
+  width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 0;
+  touch-action: none;
+  pointer-events: none; /* only the handle is interactive */
+}
+
+.rope-cord {
+  width: 2px;
+  height: calc(var(--len) + var(--pull, 0px));
+  background: linear-gradient(to bottom, var(--cord-top), var(--cord-bottom));
+  border-radius: 0 0 1px 1px;
+}
+
+.rope-handle {
+  position: relative;
+  width: 44px;
+  height: 46px;
+  margin-top: -8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 14px;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.rope-handle:active,
+.rope[data-dragging] .rope-handle {
+  cursor: grabbing;
+}
+
+.rope-handle::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 16px;
+  height: 30px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #ff9a5c, var(--color-accent));
+  box-shadow:
+    0 0 14px rgb(255 106 43 / 0.45),
+    inset 0 -3px 0 rgb(90 15 2 / 0.45);
+}
+
+@media (max-width: 767px) {
+  .rope {
+    --len: 62px;
+    right: 0.375rem;
+  }
+  .rope-handle::before {
+    top: 10px;
+    width: 14px;
+    height: 26px;
+  }
+}
+
+@media print {
+  .rope {
+    display: none;
+  }
+}
+
+/* Keep header controls clear of the cord. Unlayered, so it beats the container utility. */
+@media (max-width: 767px) {
+  .site-nav {
+    padding-right: 56px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1259px) {
+  .site-nav {
+    padding-right: 76px;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Ink-spill theme transition (lib/ink-transition.ts)                */
+/* ---------------------------------------------------------------- */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* The burning ember edge: whatever shows between the old and new snapshots */
+:root.ink-switch::view-transition,
+:root.ink-clip::view-transition {
+  background: radial-gradient(
+    circle at var(--ink-x, 100%) var(--ink-y, 0%),
+    #fff1d6 0%,
+    #ffb070 12%,
+    #ff6a2b 34%,
+    #c2290a 70%,
+    #5a0f02 100%
+  );
+}
+
+/* Chromium: one canvas mask drives both snapshots */
+:root.ink-switch::view-transition-old(root),
+:root.ink-switch::view-transition-new(root) {
+  -webkit-mask-image: var(--ink);
+  mask-image: var(--ink);
+  /* 100% 100% plus a few px of bleed so the image's antialiased edge pixels sit
+     off-screen instead of drawing an ember hairline round the viewport */
+  -webkit-mask-size: calc(100% + 6px) calc(100% + 6px);
+  mask-size: calc(100% + 6px) calc(100% + 6px);
+  -webkit-mask-position: -3px -3px;
+  mask-position: -3px -3px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+:root.ink-switch::view-transition-new(root) {
+  mask-mode: luminance;
+}
+
+/* WebKit: animated clip-path: path(); the new snapshot starts hidden */
+:root.ink-clip::view-transition-new(root) {
+  clip-path: circle(0);
+}
+
+/* Hero tracker progress bar fill (CSS so it runs before hydration) */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.progress-fill {
+  transform-origin: left center;
+  animation: progress-fill 1.4s var(--ease-out-expo) 0.3s both;
+}
+
+.live-dot {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .progress-fill,
+  .live-dot {
+    animation: none;
+  }
+}
