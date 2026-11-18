@@ -8,7 +8,7 @@ export type Theme = "dark" | "light";
 
 export const THEME_KEY = "theme";
 export const DEFAULT_THEME: Theme = "light";
-const THEME_COLORS: Record<Theme, string> = { dark: "#0A0A0B", light: "#F5F5F2" };
+const THEME_COLORS: Record<Theme, string> = { dark: "#121210", light: "#FFFFEB" };
 
 /**
  * Runs in <head> before first paint so the page never flashes the wrong theme.

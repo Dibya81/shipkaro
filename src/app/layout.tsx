@@ -1,25 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { EB_Garamond, Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MotionProvider } from "@/components/MotionProvider";
 import { ThemeRope } from "@/components/ThemeRope";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { brand, contact, seo } from "@/config/site";
 import { instagramLink } from "@/lib/whatsapp";
 import { DEFAULT_THEME, themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const garamond = EB_Garamond({
+  variable: "--font-garamond",
   subsets: ["latin"],
-  weight: ["500", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F5F5F2", // kept in sync with the active theme by lib/theme.ts
+  themeColor: "#FFFFEB", // kept in sync with the active theme by lib/theme.ts
   colorScheme: "light dark",
 };
 
@@ -73,7 +74,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme={DEFAULT_THEME}
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable}`}
+      className={`${geist.variable} ${garamond.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
+          <SmoothScroll />
           <Header />
           <ThemeRope />
           <main id="main" className="flex-1">

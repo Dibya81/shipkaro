@@ -15,7 +15,7 @@ export function Logo({ onClick }: { onClick?: () => void }) {
         className="logo-mark h-[26px] w-[37px] shrink-0"
         style={{ maskImage: `url(${brand.logo})`, WebkitMaskImage: `url(${brand.logo})` }}
       />
-      <span className="font-display text-[1.25rem] leading-none">{brand.name}</span>
+      <span className="text-[1.2rem] font-semibold leading-none tracking-[-0.03em]">{brand.name}</span>
     </Link>
   );
 }

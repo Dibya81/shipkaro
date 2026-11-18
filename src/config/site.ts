@@ -61,35 +61,39 @@ export const nav = {
 /* ------------------------------------------------------------------ */
 
 export const hero = {
-  pill: "Software company · India → Worldwide",
+  eyebrow: "Custom software studio",
   headlineLine1: "You need it.",
-  headlineLine2: "We ship it.", // shown in orange
-  subtext:
-    "Custom software for any business or idea: management systems, apps, websites, automation and more. Designed, built and delivered on time.",
+  headlineLine2: "We ship it.", // set in italic
+  subtext: "Apps, management systems and websites for your business or idea. Fixed quote, built on time.",
   primaryCta: { label: "Start a project", href: "/start" },
-  secondaryCta: { label: "See what we build", href: "/#build" },
-  ticks: ["Fixed quotes", "Full source code handover", "Pay via UPI"],
+  // The sentences that drift along the curved lines around the hero
+  driftLines: [
+    "We need a gym app before the first of the month, members, renewals, the whole thing. ",
+    "Can you build billing for our cafe so the kitchen gets tickets straight away? ",
+    "My final year project is due in May and I want to actually understand the code. ",
+  ],
 };
 
-/* The example card on the right side of the hero */
-export const tracker = {
-  label: "Live delivery tracker",
-  project: "Gym Management System",
-  tag: "Custom software",
-  progress: 68, // percent, the bar animates to this on load
-  steps: [
-    { title: "Requirements locked", status: "done" },
-    { title: "UI design approved", status: "done" },
-    { title: "Building backend + dashboard", status: "active" },
-    { title: "Go live + handover", status: "next" },
-  ] as { title: string; status: "done" | "active" | "next" }[],
-  statusLabels: { done: "Done", active: "In progress", next: "Next" },
-  footnote: "Updates sent to you on WhatsApp at every step",
-};
+/* Big statement under the hero: the photo card that shrinks as you scroll */
+export const statement = {
+  headingStart: "One chat.",
+  headingItalic: "Software in your hands.",
+  subtext: "No discovery decks or retainers. Tell us what you need on WhatsApp, get a fixed quote, and we start the same day.",
+  // The card on the left that fades away as you scroll
+  agencyLabel: "The usual way",
+  agencySteps: ["Discovery calls", "Proposal deck", "Monthly retainer", "Kick-off in weeks"],
+  // The photo card: this label stays, the lines below play one after another as you scroll
+  shipLabel: "With ShipKaro",
+  shipLines: ["Quote in a day", "Work starts the same day", "Your code, handed over"],
+  image: "/images/statement.jpg",
+  imageAlt: "Laptop glowing on a dark desk",
+}
 
 /* ------------------------------------------------------------------ */
 /* Capability strip                                                    */
 /* ------------------------------------------------------------------ */
+
+export const capabilitiesLabel = "If it runs on software, we build it";
 
 export const capabilities = [
   "Web apps",
@@ -164,22 +168,120 @@ export const buildSection = {
 
 export const processSection = {
   eyebrow: "How it works",
-  heading: "From WhatsApp to delivered in five steps.",
+  headingStart: "From WhatsApp to",
+  headingItalic: "delivered.",
   steps: [
-    { title: "Chat with us", description: "Message on WhatsApp or Instagram." },
-    { title: "Share details", description: "Fill one short form with your requirements and deadline." },
-    { title: `Pay ${policies.advancePercent}%`, description: "Advance by UPI. Work starts the same day." },
-    { title: "We build", description: "Progress updates at every milestone." },
-    { title: "Delivered", description: "Walkthrough call, then the balance." },
+    {
+      title: "Chat with us",
+      description: "Message on WhatsApp or Instagram. Tell us the idea in your own words, voice notes welcome.",
+      image: "/images/step-chat.jpg",
+      imageAlt: "Phone resting on a desk",
+      bubble: "Hi, I run two PGs in Pune. Can you build something for rent and dues?",
+    },
+    {
+      title: "Share details",
+      description: "One short form with your requirements and deadline. We reply with a fixed quote.",
+      image: "/images/step-details.jpg",
+      imageAlt: "Overhead view of a desk with laptops and notes",
+      bubble: "Quote: rooms, tenants, rent reminders on WhatsApp, monthly reports.",
+    },
+    {
+      title: `Pay ${policies.advancePercent}%`,
+      description: "Advance by UPI. Work starts the same day, not next sprint.",
+      image: "/images/step-pay.jpg",
+      imageAlt: "Card payment on a counter terminal",
+      bubble: `${policies.advancePercent}% advance received. Kick-off today.`,
+    },
+    {
+      title: "We build",
+      description: "You get progress on WhatsApp at every milestone, with screens to try as we go.",
+      image: "/images/step-build.jpg",
+      imageAlt: "Code on a laptop screen",
+      bubble: "Dashboard is ready to try. Sending you the link now.",
+    },
+    {
+      title: "Delivered",
+      description: "Walkthrough call and full source code handover. Then the balance.",
+      image: "/images/step-delivered.jpg",
+      imageAlt: "Two colleagues high-fiving at a desk",
+      bubble: "Live and handed over. The code is yours.",
+    },
   ],
 };
+
+/* ------------------------------------------------------------------ */
+/* Who we build for: the boxes that drift across the dark section     */
+/* ------------------------------------------------------------------ */
+
+export const audienceSection = {
+  eyebrow: "What we build",
+  headingStart: "Software for",
+  headingItalic: "whoever you are.",
+  linkLabel: "Start this",
+};
+
+export type Audience = {
+  title: string;
+  description: string;
+  /** Service slugs from the list above; each becomes a link to /start */
+  slugs: string[];
+  image: string;
+  imageAlt: string;
+  /** Card colour */
+  tone: "accent" | "cream" | "sand" | "ink" | "wash";
+};
+
+export const audiences: Audience[] = [
+  {
+    title: "Students",
+    description: "Projects you can explain in the viva, and a profile that gets replies.",
+    slugs: ["major-minor-projects", "portfolio-websites", "resumes"],
+    image: "/images/build-students.jpg",
+    imageAlt: "Students laughing around a laptop in a library",
+    tone: "accent",
+  },
+  {
+    title: "Professionals",
+    description: "Doctors, lawyers, CAs, coaches and creators who want clients to find and book them.",
+    slugs: ["clinic-hospital-software", "booking-appointments", "business-websites", "portfolio-websites"],
+    image: "/images/audience-professionals.jpg",
+    imageAlt: "Client checking in for an appointment on a tablet",
+    tone: "cream",
+  },
+  {
+    title: "Local businesses",
+    description: "Gyms, PGs, cafes, shops and coaching centres that run on registers today.",
+    slugs: ["gym-fitness-management", "pg-hostel-management", "restaurant-cafe-pos", "inventory-billing", "school-coaching-erp"],
+    image: "/images/build-business.jpg",
+    imageAlt: "A busy cafe counter",
+    tone: "sand",
+  },
+  {
+    title: "Companies",
+    description: "Internal tools, automation and integrations that save your team hours every week.",
+    slugs: ["crm-sales", "hr-payroll", "dashboards-analytics", "ai-chatbots-automation", "hardware-system-integration"],
+    image: "/images/build-hardware.jpg",
+    imageAlt: "Engineer working beside lab hardware",
+    tone: "ink",
+  },
+  {
+    title: "Founders",
+    description: "Your idea built as a real product, ready for its first paying users.",
+    slugs: ["saas-products", "mobile-apps", "ecommerce-store"],
+    image: "/images/build-apps.jpg",
+    imageAlt: "Phone home screen full of apps",
+    tone: "wash",
+  },
+];
 
 /* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
 export const faqSection = {
-  heading: "Questions",
+  headingStart: "Questions,",
+  headingItalic: "answered.",
+  answerLabel: "ShipKaro",
   items: [
     {
       q: "Will I understand my project for the viva?",
@@ -209,12 +311,21 @@ export const faqSection = {
 /* ------------------------------------------------------------------ */
 
 export const ctaBand = {
-  heading: "Deadline coming up? Let’s ship it.",
+  headingStart: "Deadline coming up?",
+  headingItalic: "Let’s ship it.",
+  subtext: "Send one message. You’ll have a fixed quote and a start date the same day.",
   buttonLabel: "Chat on WhatsApp",
+  image: "/images/cta.jpg",
+  imageAlt: "A team working together around laptops",
 };
 
 export const footer = {
   privacyLabel: "Privacy",
+  blurb: "Custom software for businesses, founders and students. Built in India, shipped everywhere.",
+  columns: {
+    explore: "Explore",
+    contact: "Contact",
+  },
 };
 
 /* ------------------------------------------------------------------ */

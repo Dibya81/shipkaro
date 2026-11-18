@@ -10,60 +10,86 @@
  */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0a0a0b;
-  --card: #121214;
-  --card-hover: #16161a;
-  --raised: #18181b;
-  --raised-2: #1e1e22;
-  --line-soft: #1f1f23;
-  --line: #232328;
-  --line-strong: #2e2e34;
-  --ring-idle: #3a3a40;
-  --fg: #f5f5f2;
-  --soft: #c9c9ce;
-  --label: #d4d4d8;
-  --muted: #a1a1aa;
-  --faint: #8e8e96;
-  --placeholder: #8a8a92;
-  --accent-strong: #ff6a2b; /* orange for large text and icons */
-  --accent-text: #ff8a57; /* orange for small text */
+  --bg: #121210;
+  --card: #1a1a17;
+  --card-hover: #1f1f1b;
+  --raised: #20201c;
+  --raised-2: #272722;
+  --line-soft: #23231f;
+  --line: #2b2b26;
+  --line-strong: #3a3a33;
+  --ring-idle: #45453d;
+  --fg: #f4f4e2;
+  --soft: #d2d2c2;
+  --label: #dcdccb;
+  --muted: #a8a89a;
+  --faint: #92927f;
+  --placeholder: #8c8c80;
+  --accent-strong: #ff6a2b;
+  --accent-text: #ff8a57;
   --accent-line: #4a2a18;
-  --accent-wash: #1c1612;
+  --accent-wash: #22180f;
   --success-bg: #1f3d2b;
   --success: #6ee7a0;
   --danger: #ff8a80;
-  --cord-top: #3a3a40;
-  --cord-bottom: #8e8e96;
+  --cord-top: #45453d;
+  --cord-bottom: #92927f;
+  /* colour-block sheets (marquee, audience section) */
+  --sheet: #1c1c18;
+  --sheet-fg: #f4f4e2;
+  --sheet-muted: #a8a89a;
+  --sheet-line: #2e2e28;
+  /* audience card tones */
+  --tone-cream: #24241f;
+  --tone-cream-fg: #f4f4e2;
+  --tone-sand: #34342a;
+  --tone-sand-fg: #f4f4e2;
+  --tone-wash: #3a2418;
+  --tone-wash-fg: #ffe9dc;
+  --tone-ink: #f4f4e2;
+  --tone-ink-fg: #161614;
 }
 
-/* Light is the default theme */
+/* Light is the default theme. The canvas is a warm off-white, not pure white. */
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f5f5f2;
-  --card: #fdfdfb;
-  --card-hover: #f9f9f6;
-  --raised: #f0f0ec;
-  --raised-2: #eaeae5;
-  --line-soft: #e6e6e1;
-  --line: #e1e1db;
-  --line-strong: #cfcfc8;
-  --ring-idle: #c9c9c2;
-  --fg: #0a0a0b;
-  --soft: #3b3b42;
-  --label: #2a2a30;
-  --muted: #55555d;
-  --faint: #6a6a72;
-  --placeholder: #6e6e76;
-  --accent-strong: #e2531a; /* 3.5:1 on paper: large text and icons only */
-  --accent-text: #c2410c; /* 4.7:1 on paper: safe for small text */
+  --bg: #ffffeb;
+  --card: #fafae2;
+  --card-hover: #f5f5dc;
+  --raised: #f2f2d9;
+  --raised-2: #eaead0;
+  --line-soft: #ebebd3;
+  --line: #e2e2c9;
+  --line-strong: #cdcdb3;
+  --ring-idle: #c4c4ab;
+  --fg: #161614;
+  --soft: #393933;
+  --label: #2a2a25;
+  --muted: #55554d;
+  --faint: #67675e;
+  --placeholder: #6b6b62;
+  --accent-strong: #e2531a; /* large text and icons only */
+  --accent-text: #b93c0a; /* safe for small text on the cream canvas */
   --accent-line: #f5c7ae;
-  --accent-wash: #fff1ea;
+  --accent-wash: #fff0dc;
   --success-bg: #ddf2e4;
   --success: #157f3b;
   --danger: #b42318;
-  --cord-top: #c9c9c2;
-  --cord-bottom: #55555d;
+  --cord-top: #c4c4ab;
+  --cord-bottom: #55554d;
+  --sheet: #161614;
+  --sheet-fg: #ffffeb;
+  --sheet-muted: #b2b2a3;
+  --sheet-line: #2c2c27;
+  --tone-cream: #ffffeb;
+  --tone-cream-fg: #161614;
+  --tone-sand: #e6e6cc;
+  --tone-sand-fg: #161614;
+  --tone-wash: #ffd9c2;
+  --tone-wash-fg: #161614;
+  --tone-ink: #2a2a24;
+  --tone-ink-fg: #ffffeb;
 }
 
 @theme inline {
@@ -89,17 +115,22 @@
   --color-success-bg: var(--success-bg);
   --color-success: var(--success);
   --color-danger: var(--danger);
+  --color-sheet: var(--sheet);
+  --color-sheet-fg: var(--sheet-fg);
+  --color-sheet-muted: var(--sheet-muted);
+  --color-sheet-line: var(--sheet-line);
 }
 
 /* Brand constants, identical in both themes */
 @theme {
   --color-accent: #ff6a2b; /* Ship Orange fills: buttons, CTA band, tags */
   --color-accent-hover: #ff7d45;
-  --color-ink: #0a0a0b; /* text on orange */
-  --color-on-ink: #f5f5f2; /* text on ink buttons */
+  --color-ink: #161614; /* text on orange */
+  --color-on-ink: #ffffeb; /* text on ink buttons */
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  /* Serif display, chosen to match the editorial reference the brand is built on */
+  --font-display: var(--font-garamond), ui-serif, Georgia, serif;
 
   --radius-card: 20px;
   --radius-panel: 24px;
@@ -144,13 +175,13 @@ body {
 
 @utility font-display {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 @utility container-page {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1240px;
   margin-inline: auto;
   padding-inline: 20px;
   @media (width >= 640px) {
@@ -208,7 +239,7 @@ body {
   background: var(--color-ink);
   color: var(--color-on-ink);
   &:hover {
-    background: #1d1d21;
+    background: #2a2a25;
   }
 }
 
@@ -363,38 +394,60 @@ body {
   clip-path: circle(0);
 }
 
-/* Hero tracker progress bar fill (CSS so it runs before hydration) */
-@keyframes progress-fill {
+/* ---------------------------------------------------------------- */
+/* Home page                                                         */
+/* ---------------------------------------------------------------- */
+
+/* Big rounded colour-block sheets, like stacked paper */
+@utility sheet {
+  border-radius: 40px 40px 0 0;
+  @media (width < 768px) {
+    border-radius: 28px 28px 0 0;
+  }
+}
+
+/* Marquee: CSS only, so it runs before hydration */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Hero entrance */
+@keyframes rise {
   from {
-    transform: scaleX(0);
+    opacity: 0;
+    transform: translateY(18px);
   }
 }
-
-@keyframes live-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
+.rise {
+  animation: rise 1s var(--ease-out-expo) both;
 }
 
-.progress-fill {
-  transform-origin: left center;
-  animation: progress-fill 1.4s var(--ease-out-expo) 0.3s both;
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
-
-.live-dot {
-  animation: live-pulse 2s ease-in-out infinite;
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .progress-fill,
-  .live-dot {
+  .marquee-track,
+  .rise {
     animation: none;
   }
 }
