@@ -15,7 +15,7 @@ import {
   type SpeedId,
 } from "@/config/pricing";
 import { policies, startPage } from "@/config/site";
-import { addRequest, computeEstimate, type Selection } from "@/lib/store";
+import { computeEstimate, type Selection } from "@/lib/model";
 import { whatsappLink } from "@/lib/whatsapp";
 
 const OTHER = "other";
@@ -51,6 +51,7 @@ export function ProjectBuilder() {
   const [d, setD] = useState<Details>({ name: "", phone: "", email: "", org: "", deadline: "", notes: "", budget: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [sentUrl, setSentUrl] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
   // URL ?service=<slug> preselects; a click always wins.
   const fromUrl = urlService === OTHER || findItem(urlService) ? urlService : null;
@@ -125,7 +126,7 @@ export function ProjectBuilder() {
     return lines.join("\n");
   }
 
-  function submit() {
+  async function submit() {
     const found = validate();
     setErrors(found);
     const first = (["item", "name", "phone", "notes"] as const).find((k) => found[k]);
@@ -135,21 +136,42 @@ export function ProjectBuilder() {
       el?.scrollIntoView({ block: "center", behavior: "smooth" });
       return;
     }
-    addRequest({
-      name: d.name.trim(),
-      phone: d.phone.trim(),
-      email: d.email.trim(),
-      org: d.org.trim(),
-      categoryTitle: isOther ? builder.otherTitle : (category?.title ?? ""),
-      itemTitle: isOther ? builder.otherTitle : item!.title,
-      selection,
-      estimate,
-      deadline: d.deadline,
-      budget: custom ? d.budget : "",
-      notes: d.notes.trim(),
+    const message = buildMessage();
+    const url = whatsappLink(message);
+    // Open the WhatsApp tab inside the click (so pop-up blockers allow it), save the
+    // request and ping Telegram, then point the tab at WhatsApp. WhatsApp always opens,
+    // even if saving fails or takes too long.
+    const win = window.open("", "_blank");
+    setSending(true);
+    // The server rechecks the price, saves the request and pings Telegram.
+    const save = fetch("/api/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        selection,
+        details: {
+          name: d.name.trim(),
+          phone: d.phone.trim(),
+          email: d.email.trim(),
+          org: d.org.trim(),
+          deadline: d.deadline,
+          budget: custom ? d.budget : "",
+          notes: d.notes.trim(),
+        },
+      }),
+      keepalive: true,
+    }).then((res) => {
+      if (!res.ok) throw new Error(`Saving request failed (${res.status})`);
     });
-    const url = whatsappLink(buildMessage());
-    window.open(url, "_blank", "noopener,noreferrer");
+    save.catch((err) => console.warn("Request not saved", err));
+    await Promise.race([save.catch(() => {}), new Promise((r) => setTimeout(r, 4000))]);
+    setSending(false);
+    if (win && !win.closed) {
+      win.opener = null;
+      win.location.href = url;
+    } else {
+      window.location.assign(url);
+    }
     setSentUrl(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -211,7 +233,7 @@ export function ProjectBuilder() {
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
-          submit();
+          void submit();
         }}
         className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12"
       >
@@ -563,9 +585,9 @@ export function ProjectBuilder() {
                 </>
               )}
             </div>
-            <button type="submit" className="btn btn-primary mt-6 hidden w-full lg:inline-flex">
+            <button type="submit" disabled={sending} className="btn btn-primary mt-6 hidden w-full disabled:opacity-70 lg:inline-flex">
               <Send className="size-[18px]" aria-hidden />
-              {startPage.submitLabel}
+              {sending ? startPage.sendingLabel : startPage.submitLabel}
             </button>
           </div>
         </aside>
@@ -579,7 +601,7 @@ export function ProjectBuilder() {
                 {!itemSlug ? startPage.estimateEmptyPrice : custom ? builder.quoteLabel : formatINR(estimate.total)}
               </p>
             </div>
-            <button type="submit" className="btn btn-primary shrink-0">
+            <button type="submit" disabled={sending} className="btn btn-primary shrink-0 disabled:opacity-70">
               <Send className="size-[18px]" aria-hidden />
               {builder.sendShort}
             </button>

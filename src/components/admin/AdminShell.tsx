@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { ArrowUpRight, FolderKanban, Inbox, Info, LayoutDashboard, Wallet } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, FolderKanban, Inbox, LayoutDashboard, LogOut, ShieldAlert, Wallet } from "lucide-react";
 import { brand } from "@/config/site";
-import { clearAll, loadSample, seedSampleOnFirstVisit, useDB } from "@/lib/store";
+import { signInAdmin, signOutAdmin, useAuthState, useDB, useHydrated } from "@/lib/store";
 import { btnSm } from "@/components/admin/ui";
 
 const NAV = [
@@ -16,13 +16,78 @@ const NAV = [
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
+  const auth = useAuthState();
+  const hydrated = useHydrated();
+  if (!hydrated || auth.status === "loading") {
+    return <div className="flex min-h-[100dvh] items-center justify-center text-[15px] text-muted">Loading…</div>;
+  }
+  if (auth.status !== "admin") return <SignInGate />;
+  return <AdminFrame>{children}</AdminFrame>;
+}
+
+function SignInGate() {
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  return (
+    <div className="flex min-h-[100dvh] items-center justify-center px-5">
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (!password || busy) return;
+          setBusy(true);
+          setError("");
+          try {
+            if (!(await signInAdmin(password))) setError("Wrong password.");
+          } catch {
+            setError("Could not reach the server. Check your connection.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+        className="w-full max-w-[420px] rounded-[28px] border border-line bg-card p-8 text-center"
+      >
+        <span
+          aria-hidden
+          className="logo-mark mx-auto block h-[30px] w-[42px] text-fg"
+          style={{ maskImage: `url(${brand.logo})`, WebkitMaskImage: `url(${brand.logo})` }}
+        />
+        <h1 className="mt-5 font-display text-[36px] leading-tight">{brand.name} Admin</h1>
+        <p className="mt-2 text-[15px] text-muted">Enter the admin password.</p>
+        <label htmlFor="admin-password" className="sr-only">
+          Password
+        </label>
+        <input
+          id="admin-password"
+          type="password"
+          autoComplete="current-password"
+          autoFocus
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? "admin-password-error" : undefined}
+          className="mt-6 min-h-12 w-full rounded-[14px] border border-line-strong bg-bg px-4 text-[16px] outline-none focus:border-fg"
+        />
+        <button type="submit" disabled={busy || !password} className="btn btn-primary mt-4 w-full disabled:opacity-70">
+          {busy ? "Checking…" : "Sign in"}
+        </button>
+        {error && (
+          <p id="admin-password-error" role="alert" className="mt-3 flex items-center justify-center gap-2 text-[14px] text-danger">
+            <ShieldAlert className="size-4 shrink-0" aria-hidden /> {error}
+          </p>
+        )}
+        <Link href="/" className="mt-6 inline-flex min-h-10 items-center text-[14px] text-muted hover:text-fg">
+          Back to website
+        </Link>
+      </form>
+    </div>
+  );
+}
+
+function AdminFrame({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const db = useDB();
   const newCount = db.requests.filter((r) => r.status === "new").length;
-
-  useEffect(() => {
-    seedSampleOnFirstVisit();
-  }, []);
 
   const isActive = (href: string) => (href === "/admin" ? path === "/admin" : path.startsWith(href));
 
@@ -81,29 +146,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-3 border-b border-line bg-accent-wash/60 px-5 py-3 text-[13px] text-soft sm:flex-row sm:items-center sm:justify-between lg:px-10">
-          <p className="flex items-start gap-2">
-            <Info className="mt-0.5 size-4 shrink-0 text-accent-text" aria-hidden />
-            <span>
-              Preview mode: data is saved in this browser only, and this page has no login yet. Website requests reach you on
-              WhatsApp until the backend is connected.
-            </span>
-          </p>
-          <div className="flex shrink-0 items-center gap-2">
-            {db.sample ? (
-              <button
-                type="button"
-                onClick={() => confirm("Remove the sample data and start empty?") && clearAll()}
-                className={btnSm + " border border-line-strong bg-bg hover:border-faint"}
-              >
-                Clear sample data
-              </button>
-            ) : (
-              <button type="button" onClick={loadSample} className={btnSm + " border border-line-strong bg-bg hover:border-faint"}>
-                Load sample data
-              </button>
-            )}
-          </div>
+        <div className="flex items-center justify-end gap-3 border-b border-line px-5 py-3 text-[13px] text-muted lg:px-10">
+          <button type="button" onClick={() => void signOutAdmin()} className={btnSm + " min-h-9 border border-line-strong hover:border-faint"}>
+            <LogOut className="size-4" aria-hidden /> Sign out
+          </button>
         </div>
         <main id="main" className="px-5 pb-20 pt-8 lg:px-10 lg:pt-10">
           {children}
