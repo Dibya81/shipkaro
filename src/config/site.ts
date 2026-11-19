@@ -103,7 +103,9 @@ export const capabilities = [
   "AI & automation",
   "Websites",
   "Integrations",
-  "Hardware",
+  "IoT & hardware",
+  "3D models",
+  "Games",
 ];
 
 /* ------------------------------------------------------------------ */
@@ -143,6 +145,11 @@ export const services: Service[] = [
   { slug: "business-websites", title: "Business Websites", description: "Fast, modern sites that bring in customers.", price: CUSTOM, highlight: false },
   { slug: "major-minor-projects", title: "Major & Minor Projects", description: "Final-year projects with report and walkthrough.", price: "From ₹3,999", highlight: true },
   { slug: "portfolio-websites", title: "Portfolio Websites", description: "Personal sites for students and professionals.", price: "From ₹1,999", highlight: true },
+  { slug: "iot-projects", title: "IoT Projects", description: "Smart devices with sensors, apps and live dashboards.", price: CUSTOM, highlight: false },
+  { slug: "hardware-projects", title: "Hardware & Electronics", description: "Circuits, firmware, robotics and automation.", price: CUSTOM, highlight: false },
+  { slug: "3d-modelling", title: "3D Models", description: "Products, characters and buildings, print or AR ready.", price: CUSTOM, highlight: false },
+  { slug: "3d-web-experiences", title: "3D Websites", description: "Product viewers, configurators and immersive pages.", price: CUSTOM, highlight: false },
+  { slug: "game-development", title: "2D & 3D Games", description: "Android, PC and web games in Unity, Unreal or Godot.", price: CUSTOM, highlight: false },
   { slug: "resumes", title: "Resumes", description: "ATS-friendly resumes written from your details.", price: "From ₹499", highlight: true },
 ];
 
@@ -235,7 +242,7 @@ export const audiences: Audience[] = [
   {
     title: "Students",
     description: "Projects you can explain in the viva, and a profile that gets replies.",
-    slugs: ["major-minor-projects", "portfolio-websites", "resumes"],
+    slugs: ["major-minor-projects", "iot-projects", "portfolio-websites", "resumes"],
     image: "/images/build-students.jpg",
     imageAlt: "Students laughing around a laptop in a library",
     tone: "accent",
@@ -272,6 +279,14 @@ export const audiences: Audience[] = [
     imageAlt: "Phone home screen full of apps",
     tone: "wash",
   },
+  {
+    title: "Makers & gamers",
+    description: "IoT devices, electronics, 3D models and games. If you can touch it or play it, we build it.",
+    slugs: ["iot-projects", "hardware-projects", "3d-modelling", "3d-web-experiences", "game-development"],
+    image: "/images/build-makers.jpg",
+    imageAlt: "Arduino board wired to sensors on a breadboard",
+    tone: "ink",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -294,6 +309,10 @@ export const faqSection = {
     {
       q: "Can you work with our existing software or hardware?",
       a: "Yes. We integrate with the tools, databases and devices you already use.",
+    },
+    {
+      q: "Do you build hardware, IoT, 3D models or games?",
+      a: "Yes. IoT devices and electronics with their firmware and apps, 3D models ready to print or render, and 2D or 3D games for Android, PC and the web.",
     },
     {
       q: "Do you work with clients outside India?",
@@ -454,7 +473,7 @@ export const notFoundPage = {
 export const seo = {
   title: "ShipKaro | You need it. We ship it.",
   description:
-    "Custom software for any business or idea: management systems, apps, websites, automation and college projects. Fixed quotes, full source code handover, pay via UPI.",
+    "Custom software and hardware for any business or idea: management systems, apps, websites, automation, IoT, 3D models, games and college projects. Fixed quotes, full source code handover, pay via UPI.",
   keywords: [
     "custom software development India",
     "gym management system",
@@ -464,5 +483,9 @@ export const seo = {
     "final year project",
     "portfolio website",
     "mobile app development",
+    "IoT project",
+    "Arduino ESP32 project",
+    "3D modelling services",
+    "game development India",
   ],
 };

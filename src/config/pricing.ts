@@ -273,6 +273,89 @@ export const categories: Category[] = [
       },
     ],
   },
+  {
+    id: "makers",
+    title: "Hardware, 3D & games",
+    blurb: "IoT, electronics, 3D models and games",
+    items: [
+      {
+        slug: "iot-projects",
+        title: "IoT project",
+        summary: "Sensors and ESP32, Arduino or Raspberry Pi, with a live app or dashboard to watch and control it.",
+        days: "1 to 4 weeks",
+        variants: [
+          { id: "student", label: "College IoT project", price: 5999 },
+          { id: "product", label: "Smart device or prototype for a business", price: 19999 },
+        ],
+        addons: [
+          { id: "app", label: "Mobile app to control the device", price: 7999 },
+          { id: "cloud", label: "Cloud dashboard with live data and alerts", price: 4999 },
+          { id: "enclosure", label: "Custom 3D-printed enclosure", price: 2499 },
+          { id: "report", label: "Project report and PPT", price: 999 },
+        ],
+      },
+      {
+        slug: "hardware-projects",
+        title: "Hardware & electronics",
+        summary: "Circuits, embedded firmware, robotics and automation, built and tested on real hardware.",
+        days: "2 to 6 weeks",
+        variants: [
+          { id: "student", label: "College hardware or robotics project", price: 6999 },
+          { id: "custom", label: "Custom device or machine automation", price: 24999 },
+        ],
+        addons: [
+          { id: "pcb", label: "Custom PCB design", price: 3999 },
+          { id: "ota", label: "Remote firmware updates over Wi-Fi", price: 2999 },
+          { id: "report", label: "Project report and PPT", price: 999 },
+        ],
+      },
+      {
+        slug: "3d-modelling",
+        title: "3D models",
+        summary: "Product, character and architecture models, ready for 3D printing, renders, AR or games.",
+        days: "3 to 10 days",
+        variants: [
+          { id: "object", label: "Simple object or part", price: 1999 },
+          { id: "detailed", label: "Detailed product or character", price: 4999 },
+          { id: "architecture", label: "Building or interior with walkthrough", price: 9999 },
+        ],
+        addons: [
+          { id: "render", label: "Textures and photoreal renders", price: 1499 },
+          { id: "rig", label: "Rigging and animation", price: 3999 },
+          { id: "ar", label: "View it in AR on a phone", price: 2999 },
+        ],
+      },
+      {
+        slug: "3d-web-experiences",
+        title: "3D website & product viewer",
+        summary: "Interactive 3D on the web: product configurators, 360° viewers and immersive landing pages.",
+        days: "2 to 4 weeks",
+        price: 14999,
+        addons: [
+          { id: "models", label: "We create the 3D models too", price: 4999 },
+          { id: "ar", label: "View in AR on a phone", price: 4999 },
+          { id: "configurator", label: "Colour and option configurator", price: 3999 },
+        ],
+      },
+      {
+        slug: "game-development",
+        title: "Game",
+        summary: "2D and 3D games for Android, PC and the web, built in Unity, Unreal or Godot.",
+        days: "2 to 10 weeks",
+        variants: [
+          { id: "student", label: "College game project", price: 5999 },
+          { id: "2d", label: "2D game", price: 14999 },
+          { id: "3d", label: "3D game", price: 39999 },
+        ],
+        addons: [
+          { id: "multiplayer", label: "Online multiplayer", price: 14999 },
+          { id: "monetise", label: "Ads and in-app purchases", price: 4999 },
+          { id: "publish", label: "Play Store publishing", price: 2999 },
+          { id: "level", label: "Each extra level", price: 2999 },
+        ],
+      },
+    ],
+  },
 ];
 
 /** Delivery speed. The multiplier applies to one-time costs only. */

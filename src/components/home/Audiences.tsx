@@ -82,7 +82,8 @@ function FloatingStream() {
   const step = (1 - WINDOW) / (audiences.length - 1);
 
   return (
-    <div ref={ref} className="relative h-[520vh]">
+    // ~104vh of scrolling per card, so each card keeps the same pace however many there are.
+    <div ref={ref} className="relative" style={{ height: `${audiences.length * 104}vh` }}>
       <div className="sticky top-0 h-[100dvh] overflow-hidden">
         <Heading className="container-page absolute inset-0 justify-center" />
         <ul className="absolute inset-0">
