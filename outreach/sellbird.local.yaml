@@ -1,0 +1,160 @@
+# Sellbird config for ShipKaro.
+# setup.sh copies this to outreach/sellbird/sellbird.local.yaml (the file Sellbird reads).
+# Edit this copy, then run ./setup.sh again (or edit the copy inside sellbird/ directly).
+
+persona:
+  name: "Dibya"
+  company: "ShipKaro"
+  role: "Founder"
+  email: "hello@shipkaro.com"          # TODO: the mailbox you actually send from
+  linkedin: ""
+  tone: "friendly, direct, plain Indian English, no jargon"
+
+product:
+  name: "ShipKaro custom software"
+  description: >-
+    ShipKaro builds custom software for local businesses in India: gym and fitness
+    management, PG and hostel management, clinic appointments and billing, coaching
+    and school ERP, restaurant POS, inventory and GST billing, booking systems,
+    WhatsApp bots, mobile apps and fast business websites. Also personal portfolio
+    and practice websites for doctors, dentists and growing clinics anywhere in the
+    world (India, Nepal, the US and beyond): profile, treatments, reviews, location
+    and online appointment booking. Fixed quote, work starts the same day, full
+    source code handed over.
+  pricing: "Fixed quote per project. Websites from ₹1,999. 50% advance (UPI in India; bank transfer or PayPal internationally), 50% on delivery."
+  key_benefits:
+    - "Fixed quote in a day, work starts the same day"
+    - "Built around how the business already runs: registers, WhatsApp, UPI"
+    - "Full source code handover, no monthly lock-in"
+    - "Progress shared on WhatsApp with screens to try at every milestone"
+    - "Pay 50% to start and 50% only after delivery"
+    - "For doctors: a professional site with online booking makes a growing practice look established"
+  objection_responses:
+    "already have a website": "Makes sense. Is it bringing in bookings? If it's slow on phones or has no booking button, that's usually the quick win."
+    "are you local": "We work fully online with clients in several countries. You see every screen before paying the balance."
+    "too expensive": "Totally fair. We give a fixed price before anything starts, and you can begin with just the one screen that saves you the most time."
+    "already have a solution": "Makes sense. What's the one thing it makes you still do by hand or in a register? That's usually where we help."
+    "not interested": "No problem at all. If renewals, dues or bookings ever get messy, just reply here."
+    "no time": "We do the work. You spend 15 minutes telling us how things run today, and we come back with screens to try."
+  offer:
+    primary: "Custom management software or website, fixed quote, 50% advance"
+    # What the FIRST email offers for free. Change it to whatever you can deliver
+    # within a few days of a yes (dashboard → Your company → Your offer).
+    entry: "a free mockup of the dashboard their business would use, built around how they run today"
+    entry_ideas:
+      - "a free mockup of the dashboard their business would use, built around how they run today"
+      - "a free homepage mockup with online booking and a WhatsApp button"
+      - "a free one-page plan for moving their register onto a simple app"
+      - "a free homepage mockup of their practice website with online appointment booking (doctors, dentists)"
+      - "a free personal profile page they can share with patients, built from their public details"
+    goal: "get_reply"
+    booking_method: "ask_preference"
+    booking_url: ""
+    meeting_duration: "15 minutes"
+    meeting_owner: "Dibya, founder of ShipKaro"
+
+icp:
+  industries:
+    - "gym"
+    - "dentist"
+    - "clinic"
+    - "coaching centre"
+    - "restaurant"
+    - "cafe"
+    - "hostel"
+    - "salon"
+    - "doctor"
+    - "physiotherapist"
+  company_size: "1-50 employees, owner-run; solo doctors and growing practices"
+  titles:
+    - "Doctor"
+    - "Dentist"
+    - "Owner"
+    - "Founder"
+    - "Proprietor"
+    - "Managing Director"
+    - "Director"
+  geography:
+    - "Pune, India"
+    - "Bengaluru, India"
+    - "Mumbai, India"
+    - "Hyderabad, India"
+    - "Delhi, India"
+    - "Kathmandu, Nepal"
+    - "Pokhara, Nepal"
+    - "New York, NY, USA"
+    - "Houston, TX, USA"
+    - "Chicago, IL, USA"
+    - "London, UK"
+    - "Toronto, Canada"
+    - "Sydney, Australia"
+    - "Dubai, UAE"
+  geo_coordinates:
+    "Kathmandu, Nepal": "27.7172,85.3240,15"
+    "Pokhara, Nepal": "28.2096,83.9856,10"
+    "New York, NY, USA": "40.7128,-74.0060,20"
+    "Houston, TX, USA": "29.7604,-95.3698,25"
+    "Chicago, IL, USA": "41.8781,-87.6298,20"
+    "London, UK": "51.5072,-0.1276,20"
+    "Toronto, Canada": "43.6532,-79.3832,20"
+    "Sydney, Australia": "-33.8688,151.2093,20"
+    "Dubai, UAE": "25.2048,55.2708,20"
+    "Pune, India": "18.5204,73.8567,20"
+    "Bengaluru, India": "12.9716,77.5946,20"
+    "Mumbai, India": "19.0760,72.8777,20"
+    "Hyderabad, India": "17.3850,78.4867,20"
+    "Delhi, India": "28.6139,77.2090,20"
+  hiring_signals:
+    - "receptionist"
+    - "front desk"
+    - "billing executive"
+    - "data entry"
+
+channels:
+  email:
+    enabled: true
+    provider: "gmail"            # gmail | microsoft | smtp
+    max_daily_sends: 30
+    require_approval: true        # every email waits in the Outbox for you
+    link_domains: ["shipkaro-omega.vercel.app"]
+    send_to_risky: false
+    max_bounce_rate: 0.05
+    warmup:
+      start_date: ""             # YYYY-MM-DD the day warmup started on the sending mailbox
+      min_days: 14
+      start_sends: 5
+      daily_increase: 3
+    send_window:
+      start: "10:00"
+      end: "18:00"
+      weekdays_only: true
+      recipient_timezone: true   # each prospect gets email in their own office hours
+  linkedin:
+    enabled: false
+
+usage:
+  max_daily_claude_percent: 40   # leaves most of your Claude plan for your own work
+  heartbeat_interval_minutes: 15
+  quiet_hours:
+    start: "21:00"
+    end: "09:00"
+    timezone: "Asia/Kolkata"
+
+compliance:
+  postal_address: ""             # TODO: a business address you receive mail at
+  opt_out_line: "Not useful right now? Just reply and I won't email again."
+  do_not_contact: []
+
+# Anyone who says yes to the offer is sent to the ShipKaro admin dashboard
+# (Requests tab, plus a Telegram ping) through outreach/shipkaro_bridge.py.
+handoff:
+  mcp_command: ["__VENV_PYTHON__", "__BRIDGE__"]
+  tool: create_lead
+  arguments:
+    name: "{first_name} {last_name}"
+    email: "{email}"
+    company: "{company}"
+    website: "{website}"
+    title: "{title}"
+    offer: "{offer}"
+    reply: "{reply}"

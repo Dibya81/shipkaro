@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, ChevronDown, MessageCircle, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, ChevronDown, Mail, MessageCircle, Plus, Trash2 } from "lucide-react";
 import {
   addPayment,
   addProject,
@@ -292,14 +292,22 @@ function RequestRow({ r }: { r: ProjectRequest }) {
                 ))}
               </select>
             </label>
-            <a
-              href={clientWhatsApp(r.phone, `Hi ${r.name.split(" ")[0]}, this is ShipKaro about your ${r.itemTitle} request.`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={btnSm + " bg-accent text-ink hover:bg-accent-hover"}
-            >
-              <MessageCircle className="size-4" aria-hidden /> Reply on WhatsApp
-            </a>
+            {r.phone ? (
+              <a
+                href={clientWhatsApp(r.phone, `Hi ${r.name.split(" ")[0]}, this is ShipKaro about your ${r.itemTitle} request.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={btnSm + " bg-accent text-ink hover:bg-accent-hover"}
+              >
+                <MessageCircle className="size-4" aria-hidden /> Reply on WhatsApp
+              </a>
+            ) : (
+              r.email && (
+                <a href={`mailto:${r.email}`} className={btnSm + " bg-accent text-ink hover:bg-accent-hover"}>
+                  <Mail className="size-4" aria-hidden /> Reply by email
+                </a>
+              )
+            )}
             {r.status !== "won" && !converting && (
               <button type="button" onClick={() => setConverting(true)} className={btnSm + " border border-line-strong hover:border-faint"}>
                 Won it, start project

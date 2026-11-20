@@ -15,7 +15,7 @@ export const brand = {
   name: "ShipKaro",
   tagline: "You need it. We ship it.",
   // TODO: your real production domain (used for SEO, sitemap and social cards)
-  url: "https://shipkaro.vercel.app",
+  url: "https://shipkaro-omega.vercel.app",
   // Logo inside /public. Favicon, app icons and social images are generated from it.
   logo: "/logo.svg",
 };
@@ -145,11 +145,11 @@ export const services: Service[] = [
   { slug: "business-websites", title: "Business Websites", description: "Fast, modern sites that bring in customers.", price: CUSTOM, highlight: false },
   { slug: "major-minor-projects", title: "Major & Minor Projects", description: "Final-year projects with report and walkthrough.", price: "From ₹3,999", highlight: true },
   { slug: "portfolio-websites", title: "Portfolio Websites", description: "Personal sites for students and professionals.", price: "From ₹1,999", highlight: true },
-  { slug: "iot-projects", title: "IoT Projects", description: "Smart devices with sensors, apps and live dashboards.", price: CUSTOM, highlight: false },
-  { slug: "hardware-projects", title: "Hardware & Electronics", description: "Circuits, firmware, robotics and automation.", price: CUSTOM, highlight: false },
-  { slug: "3d-modelling", title: "3D Models", description: "Products, characters and buildings, print or AR ready.", price: CUSTOM, highlight: false },
-  { slug: "3d-web-experiences", title: "3D Websites", description: "Product viewers, configurators and immersive pages.", price: CUSTOM, highlight: false },
-  { slug: "game-development", title: "2D & 3D Games", description: "Android, PC and web games in Unity, Unreal or Godot.", price: CUSTOM, highlight: false },
+  { slug: "iot-projects", title: "IoT Projects", description: "Smart devices with sensors, apps and live dashboards.", price: "From ₹999", highlight: false },
+  { slug: "hardware-projects", title: "Hardware & Electronics", description: "Circuits, firmware, robotics and automation.", price: "From ₹999", highlight: false },
+  { slug: "3d-modelling", title: "3D Models", description: "Products, characters and buildings, print or AR ready.", price: "From ₹499", highlight: false },
+  { slug: "3d-web-experiences", title: "3D Websites", description: "Product viewers, configurators and immersive pages.", price: "From ₹4,999", highlight: false },
+  { slug: "game-development", title: "2D & 3D Games", description: "Android, PC and web games in Unity, Unreal or Godot.", price: "From ₹999", highlight: false },
   { slug: "resumes", title: "Resumes", description: "ATS-friendly resumes written from your details.", price: "From ₹499", highlight: true },
 ];
 
